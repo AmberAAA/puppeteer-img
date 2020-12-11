@@ -19,6 +19,7 @@ async function handleResponse(e: Response) {
         const size = buffer.byteLength / 1024 / 1024;
         if (size > AppConfig.minSizeMb) {
             const name = url.split("/").pop() as string;
+            console.log(name)
             fs.writeFile(`${AppConfig.prefix}${name}`, await e.buffer(), null, () => {})
         }
     }

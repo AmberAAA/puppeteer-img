@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "start": "tsc && node ./build/index.js"
   },
   "author": "",
   "license": "ISC",
