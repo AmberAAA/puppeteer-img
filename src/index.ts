@@ -2,13 +2,10 @@ import puppeteer, { Page, Response } from 'puppeteer';
 import redis from "redis";
 const { promisify } = require("util");
 import url from 'url';
-import { launchConfig, AppConfig } from './config';
+import { launchConfig, AppConfig, redisConfig } from './config';
 import fs from  "fs";
 
-const client = redis.createClient({
-    host: AppConfig.redis,
-    db: 1
-});
+const client = redis.createClient(redisConfig);
 
 const getAsync = promisify(client.get).bind(client);
 const setAsync = promisify(client.set).bind(client);
@@ -22,9 +19,6 @@ const shasAsync = promisify(client.sismember).bind(client);
     const page = await brower.newPage();
     const startUrl = AppConfig.startUrl;
     const urlObj = url.parse(startUrl, true);
-    let nameFix: string | null = null;
-    page.on("domcontentloaded", (e) => {
-    })
     page.on("load", async (e) => {
         const a = await page.$$eval("a", nodes => nodes.map(e => e.getAttribute("href")));
         for(let i = 0; i < a.length; i++) {
@@ -37,14 +31,10 @@ const shasAsync = promisify(client.sismember).bind(client);
                 }
             }
         }
-        nameFix = null;
         start(page);
     })
     page.on("response",async (e, ...arr) => {
-        if (nameFix === null) {
-            nameFix = await getTitleName(page);
-        }
-        await handleResponse(e, nameFix);
+        await handleResponse(e, page);
     });
     page.on("error", (e) => {
         console.error(e);
@@ -71,13 +61,14 @@ async function getTitleName(page: Page): Promise<string> {
 
 
 
-async function handleResponse(e: Response, nameFix: string) {
+async function handleResponse(e: Response, page: Page) {
     const url = e.url();
     if (isImageUrl(url)) {
         const buffer = await e.buffer();
         const size = buffer.byteLength / 1024 / 1024;
         if (size > AppConfig.minSizeMb) {
             const name = url.split("/").pop() as string;
+            const nameFix = await getTitleName(page); 
             fs.mkdir(`${AppConfig.prefix}${nameFix}`, { recursive:　true }, async code => {
                 console.log(`${AppConfig.prefix}${nameFix}/${name}`)
                 fs.writeFile(`${AppConfig.prefix}${nameFix}/${name}`, await e.buffer(), null, () => {})

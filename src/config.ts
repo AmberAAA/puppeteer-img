@@ -1,4 +1,5 @@
 import { LaunchOptions } from "puppeteer";
+import { ClientOpts } from "redis";
 
 const isProduct = process.env.NODE_ENV === 'product';
 
@@ -17,4 +18,10 @@ export const launchConfig: LaunchOptions = {
     headless: AppConfig.headless,
     executablePath: AppConfig.executablePath,
     args: isProduct ? ["--no-sandbox"] : undefined
+}
+
+
+export const redisConfig: ClientOpts  = {
+    host: AppConfig.redis,
+    db: isProduct ? 1 : 0
 }
