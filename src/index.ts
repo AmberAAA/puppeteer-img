@@ -53,7 +53,7 @@ async function  start(page: Page) {
     const url = await spopAsync("undo");
     if (url) {
         try {
-            console.log(`停止${AppConfig.timeout}毫秒， 下一个页面：+ ${url}`)
+            console.log(`停止${AppConfig.timeout}毫秒， 下一个页面：${url}`)
             await stopMs(AppConfig.timeout)
             await page.goto(url, { timeout: 1000 * 60 });
         } catch (e) {
@@ -82,16 +82,13 @@ async function handleResponse(e: Response, page: Page) {
         if (size > AppConfig.minSizeMb) {
             const name = url.split("/").pop() as string;
             const nameFix = await getTitleName(page); 
-            fs.mkdir(`${AppConfig.prefix}${nameFix}`, { recursive:　true }, async code => {
-                console.log(`${AppConfig.prefix}${nameFix}${name}`)
-                fs.writeFile(`${AppConfig.prefix}${nameFix}${name}`, await e.buffer(), null, () => {})
-            })
-            
+            console.log(`${AppConfig.prefix}${nameFix}${name}`)
+            fs.writeFile(`${AppConfig.prefix}${nameFix}${name}`, await e.buffer(), null, () => {})
         }
     }
 }
 
 
 function isImageUrl (url: string) :boolean {
-    return (/\.(jpg|png|svg)$/i).test(url)
+    return (/\.(jpg|png|svg)$/i).test(url) && !/ssf-be11/.test(url)
 }
