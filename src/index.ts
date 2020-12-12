@@ -5,8 +5,14 @@ import fs from  "fs";
 (async function () {
     const brower = await puppeteer.launch(launchConfig);
     const page = await brower.newPage();
+    page.on("load", (e) => {
+        console.log("page on load")
+    })
     page.on("response",async (e, ...arr) => {
         await handleResponse(e);
+    });
+    page.on("error", (e) => {
+        console.error(e);
     })
     page.goto(AppConfig.startUrl);
 })()
@@ -14,6 +20,7 @@ import fs from  "fs";
 
 async function handleResponse(e: Response) {
     const url = e.url();
+    console.log(url);
     if (isImageUrl(url)) {
         const buffer = await e.buffer();
         const size = buffer.byteLength / 1024 / 1024;
