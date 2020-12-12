@@ -1,7 +1,7 @@
 import puppeteer, { Page, Response } from 'puppeteer';
 import redis from "redis";
 const { promisify } = require("util");
-import url from 'url';
+import url, { resolve } from 'url';
 import { launchConfig, AppConfig, redisConfig } from './config';
 import fs from  "fs";
 
@@ -12,6 +12,12 @@ const setAsync = promisify(client.set).bind(client);
 const saddAsync = promisify(client.sadd).bind(client);
 const spopAsync = promisify(client.spop).bind(client);
 const shasAsync = promisify(client.sismember).bind(client);
+
+const stopMs = (timer: number) => {
+    return new Promise((resolve) => {
+        setTimeout(() => resolve(null), timer);
+    })
+}
 
 
 (async function () {
@@ -47,6 +53,8 @@ async function  start(page: Page) {
     const url = await spopAsync("undo");
     if (url) {
         try {
+            console.log("停止10秒钟， 下一个页面：" + url)
+            await stopMs(10 * 1000)
             await page.goto(url, { timeout: 1000 * 60 });
         } catch (e) {
             console.error(e);
