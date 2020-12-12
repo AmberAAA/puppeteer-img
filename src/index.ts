@@ -56,12 +56,13 @@ const shasAsync = promisify(client.sismember).bind(client);
 async function  start(page: Page) {
     const url = await spopAsync("undo");
     if (url) {
-        page.goto(url);
+        await page.goto(url);
         saddAsync("do", url);
     } else {
-        page.goto(AppConfig.startUrl);
+        await page.goto(AppConfig.startUrl);
         saddAsync("do", AppConfig.startUrl);
     }
+    await page.waitForNavigation();
 }
 
 async function getTitleName(page: Page): Promise<string> {
