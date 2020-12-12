@@ -1,5 +1,7 @@
 FROM node:12-slim
 
+VOLUME /data
+
 ADD . /app
 
 WORKDIR /app

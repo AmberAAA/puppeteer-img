@@ -20,12 +20,12 @@ import fs from  "fs";
 
 async function handleResponse(e: Response) {
     const url = e.url();
-    console.log(url);
     if (isImageUrl(url)) {
         const buffer = await e.buffer();
         const size = buffer.byteLength / 1024 / 1024;
         if (size > AppConfig.minSizeMb) {
             const name = url.split("/").pop() as string;
+            console.log(`${AppConfig.prefix}${name}`);
             fs.writeFile(`${AppConfig.prefix}${name}`, await e.buffer(), null, () => {})
         }
     }
