@@ -24,7 +24,6 @@ const shasAsync = promisify(client.sismember).bind(client);
     const urlObj = url.parse(startUrl, true);
     let nameFix: string | null = null;
     page.on("domcontentloaded", (e) => {
-        console.log("domcontentloaded")
     })
     page.on("load", async (e) => {
         const a = await page.$$eval("a", nodes => nodes.map(e => e.getAttribute("href")));
@@ -79,6 +78,7 @@ async function handleResponse(e: Response, nameFix: string) {
         if (size > AppConfig.minSizeMb) {
             const name = url.split("/").pop() as string;
             fs.mkdir(`${AppConfig.prefix}${nameFix}`, { recursive:　true }, async code => {
+                console.log(`${AppConfig.prefix}${nameFix}/${name}`)
                 fs.writeFile(`${AppConfig.prefix}${nameFix}/${name}`, await e.buffer(), null, () => {})
             })
             
