@@ -46,7 +46,12 @@ const shasAsync = promisify(client.sismember).bind(client);
 async function  start(page: Page) {
     const url = await spopAsync("undo");
     if (url) {
-        await page.goto(url);
+        try {
+            await page.goto(url, { timeout: 1000 * 60 });
+        } catch (e) {
+            console.error(e);
+            start(page);
+        }
         saddAsync("do", url);
     } else {
         await page.goto(AppConfig.startUrl);
