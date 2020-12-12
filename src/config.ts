@@ -2,6 +2,8 @@ import { LaunchOptions } from "puppeteer";
 
 const isProduct = process.env.NODE_ENV === 'product';
 
+console.log(isProduct);
+
 export const AppConfig = {
     prefix: isProduct ? "/data" : "./",               // 文件路径
     minSizeMb: 0,             // 文件最小阈值
