@@ -11,7 +11,8 @@ export const AppConfig = {
     startUrl: "https://www.nvshens.org/",
     headless: isProduct ? true :　false,
     executablePath: isProduct ? "/usr/bin/google-chrome-stable" : undefined,
-    redis: isProduct ? "127.0.0.1" : "192.168.0.166"
+    redis: isProduct ? "127.0.0.1" : "192.168.0.166",
+    timeout: 5000,
 }
 
 export const launchConfig: LaunchOptions = {

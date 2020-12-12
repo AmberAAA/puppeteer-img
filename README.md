@@ -1,1 +1,9 @@
-(node:25) UnhandledPromiseRejectionWarning: Unhandled promise rejection. This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). To terminate the node process on unhandled promise rejection, use the CLI flag `--unhandled-rejections=strict` (see https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode). (rejection id: 87)
+docker run -d --network host --name puppeteer -v /mnt/user/data/pu/:/data/ amberaaa/puppeteer
+
+docker run -d \
+    -v /mnt/user/appdata/nextcloud:/var/www/html \
+    -v /mnt/user/data:/var/www/html/data \
+    --name nextcloud \
+    --network bridge \
+    -p 4040:80 \
+    nextcloud
