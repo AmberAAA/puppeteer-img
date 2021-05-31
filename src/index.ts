@@ -1,14 +1,13 @@
 import puppeteer, { Page, Response } from 'puppeteer';
 import redis from "redis";
 const { promisify } = require("util");
-import url, { resolve } from 'url';
+import url from 'url';
 import { launchConfig, AppConfig, redisConfig } from './config';
 import fs from  "fs";
+import { ok } from 'assert'
 
 const client = redis.createClient(redisConfig);
 
-const getAsync = promisify(client.get).bind(client);
-const setAsync = promisify(client.set).bind(client);
 const saddAsync = promisify(client.sadd).bind(client);
 const spopAsync = promisify(client.spop).bind(client);
 const shasAsync = promisify(client.sismember).bind(client);
@@ -24,6 +23,7 @@ const stopMs = (timer: number) => {
     const brower = await puppeteer.launch(launchConfig);
     const page = await brower.newPage();
     const startUrl = AppConfig.startUrl;
+    ok(typeof startUrl === 'string', new Error("please set START_URL env"))
     const urlObj = url.parse(startUrl, true);
     page.on("load", async (e) => {
         const a = await page.$$eval("a", nodes => nodes.map(e => e.getAttribute("href")));
@@ -62,6 +62,7 @@ async function  start(page: Page) {
         }
         saddAsync("do", url);
     } else {
+        ok(typeof AppConfig.startUrl === 'string', new Error("please set START_URL env"))
         await page.goto(AppConfig.startUrl);
         saddAsync("do", AppConfig.startUrl);
     }
@@ -83,7 +84,7 @@ async function handleResponse(e: Response, page: Page) {
             const name = url.split("/").pop() as string;
             const nameFix = await getTitleName(page); 
             console.log(`${AppConfig.prefix}${nameFix}${name}`)
-            fs.writeFile(`${AppConfig.prefix}${nameFix}${name}`, await e.buffer(), null, () => {})
+            fs.writeFile(`${AppConfig.prefix}${nameFix}${name}`, await e.buffer(), null, (e) => {console.log(e)})
         }
     }
 }
