@@ -11,7 +11,7 @@ export const AppConfig = {
     startUrl: process.env.START_URL,
     headless: isProduct ? true :　false,
     executablePath: isProduct ? "/usr/bin/google-chrome-stable" : undefined,
-    redis: "127.0.0.1",
+    redis: "redis",
     timeout: 5000,
 }
 
