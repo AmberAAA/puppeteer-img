@@ -7,11 +7,11 @@ console.log(isProduct);
 
 export const AppConfig = {
     prefix: isProduct ? "/data/" : "./test/",               // 文件路径
-    minSizeMb: 0.5,             // 文件最小阈值
-    startUrl: process.env.START_URL,
+    minSizeMb: 0.1,             // 文件最小阈值
+    startUrl: isProduct ? process.env.START_URL : 'https://sc.chinaz.com/tupian/',
     headless: isProduct ? true :　false,
     executablePath: isProduct ? "/usr/bin/google-chrome-stable" : undefined,
-    redis: "redis",
+    redis: isProduct ? "redis" : "192.168.0.72",
     timeout: 5000,
 }
 

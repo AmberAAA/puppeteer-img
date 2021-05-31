@@ -31,9 +31,11 @@ const stopMs = (timer: number) => {
             const item = a[i];
             if (item && !/(#|javascript)/.test(item)) {
                 const aimUrl = url.resolve(urlObj.href, item);
-                if (await shasAsync("do", aimUrl)) {
-                } else {
-                    await saddAsync("undo", aimUrl);
+                if (aimUrl.indexOf(startUrl) === 0) {
+                    if (await shasAsync("do", aimUrl)) {
+                    } else {
+                        await saddAsync("undo", aimUrl);
+                    }
                 }
             }
         }
